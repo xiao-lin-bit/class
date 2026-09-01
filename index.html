@@ -1,0 +1,2878 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班助自我介绍</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', sans-serif;
+            overflow: hidden;
+            background: #0a0a1a;
+        }
+
+        /* ===== 幻灯片容器 ===== */
+        .slides-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.05);
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+                        visibility 0.7s;
+            overflow: hidden;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        /* ===== 背景粒子 ===== */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: floatUp linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.5); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.2; }
+            100% { transform: translateY(-10vh) rotate(720deg) scale(1); opacity: 0; }
+        }
+
+        /* ===== 动态网格背景 ===== */
+        .grid-bg {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image:
+                linear-gradient(rgba(102,126,234,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102,126,234,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridMove 30s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+
+        /* ===== 光晕装饰 ===== */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            z-index: 0;
+            animation: orbPulse 6s ease-in-out infinite;
+        }
+
+        .glow-orb.orb1 {
+            width: 300px; height: 300px;
+            background: #667eea;
+            top: 10%; left: 5%;
+            animation-delay: 0s;
+        }
+
+        .glow-orb.orb2 {
+            width: 400px; height: 400px;
+            background: #764ba2;
+            bottom: 10%; right: 5%;
+            animation-delay: 2s;
+        }
+
+        .glow-orb.orb3 {
+            width: 250px; height: 250px;
+            background: #43e97b;
+            top: 50%; left: 50%;
+            animation-delay: 4s;
+        }
+
+        @keyframes orbPulse {
+            0%, 100% { transform: scale(1); opacity: 0.12; }
+            50% { transform: scale(1.3); opacity: 0.2; }
+        }
+
+        /* ===== 封面页 ===== */
+        .slide-cover {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            text-align: center;
+            color: #fff;
+        }
+
+        .cover-title {
+            font-size: 76px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 50%, #a8edea 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease infinite, fadeInUp 1s ease 0.3s both;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .cover-subtitle {
+            font-size: 28px;
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease 0.6s both;
+            letter-spacing: 2px;
+        }
+
+        .cover-name {
+            font-size: 56px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 24px;
+            animation: fadeInUp 1s ease 0.9s both;
+            text-shadow: 0 0 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .cover-badge {
+            display: inline-block;
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50px;
+            font-size: 20px;
+            color: #fff;
+            animation: fadeInUp 1s ease 1.2s both, badgeGlow 3s ease-in-out infinite 2s;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+        }
+
+        @keyframes badgeGlow {
+            0%, 100% { box-shadow: 0 8px 32px rgba(102,126,234,0.4); }
+            50% { box-shadow: 0 8px 60px rgba(102,126,234,0.7); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== 通用内容页 ===== */
+        .slide-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+        }
+
+        .slide-header {
+            font-size: 44px;
+            font-weight: 800;
+            margin-bottom: 50px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+        }
+
+        .slide.active .slide-header {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-header::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 16px auto 0;
+            border-radius: 2px;
+            animation: lineExpand 0.8s ease 0.5s both;
+        }
+
+        @keyframes lineExpand {
+            from { width: 0; }
+            to { width: 80px; }
+        }
+
+        .content-wrapper {
+            max-width: 1000px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== 入场动画通用类 ===== */
+        .slide.active .animate-in {
+            opacity: 1;
+            transform: translateY(0) translateX(0) scale(1);
+        }
+
+        /* ===== 信息卡片 ===== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .info-card {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 28px 32px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.4s ease,
+                        border-color 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .slide.active .info-card:nth-child(1) { transition-delay: 0.3s; opacity: 1; transform: translateY(0); }
+        .slide.active .info-card:nth-child(2) { transition-delay: 0.45s; opacity: 1; transform: translateY(0); }
+        .slide.active .info-card:nth-child(3) { transition-delay: 0.6s; opacity: 1; transform: translateY(0); }
+        .slide.active .info-card:nth-child(4) { transition-delay: 0.75s; opacity: 1; transform: translateY(0); }
+
+        .info-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 16px 48px rgba(102, 126, 234, 0.25);
+            border-color: rgba(102, 126, 234, 0.35);
+        }
+
+        .info-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+            animation: iconWiggle 3s ease-in-out infinite;
+        }
+
+        .info-card:nth-child(2) .info-icon { animation-delay: 0.5s; }
+        .info-card:nth-child(3) .info-icon { animation-delay: 1s; }
+        .info-card:nth-child(4) .info-icon { animation-delay: 1.5s; }
+
+        @keyframes iconWiggle {
+            0%, 90%, 100% { transform: rotate(0deg); }
+            92% { transform: rotate(-8deg); }
+            94% { transform: rotate(6deg); }
+            96% { transform: rotate(-4deg); }
+            98% { transform: rotate(2deg); }
+        }
+
+        .info-icon.school { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .info-icon.college { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .info-icon.major { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .info-icon.grade { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+
+        .info-text label {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .info-text value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* ===== 兴趣爱好卡片 ===== */
+        .hobby-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 修改为4列以容纳新卡片 */
+            gap: 28px;
+        }
+
+        .hobby-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 40px 28px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            transform: translateY(40px) scale(0.9);
+        }
+
+        .slide.active .hobby-card:nth-child(1) { transition-delay: 0.3s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .hobby-card:nth-child(2) { transition-delay: 0.45s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .hobby-card:nth-child(3) { transition-delay: 0.6s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .hobby-card:nth-child(4) { transition-delay: 0.75s; opacity: 1; transform: translateY(0) scale(1); }
+
+        .hobby-card:hover {
+            transform: translateY(-12px) scale(1.05);
+            border-color: rgba(102, 126, 234, 0.4);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+        }
+
+        .hobby-emoji {
+            font-size: 60px;
+            margin-bottom: 16px;
+            display: block;
+            animation: emojiBounce 2s ease-in-out infinite;
+        }
+
+        .hobby-card:nth-child(1) .hobby-emoji { animation-delay: 0s; }
+        .hobby-card:nth-child(2) .hobby-emoji { animation-delay: 0.3s; }
+        .hobby-card:nth-child(3) .hobby-emoji { animation-delay: 0.6s; }
+        .hobby-card:nth-child(4) .hobby-emoji { animation-delay: 0.9s; }
+
+        @keyframes emojiBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .hobby-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .hobby-desc {
+            font-size: 15px;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.7;
+        }
+
+        /* ===== 游戏页面 ===== */
+        .game-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .game-item {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 22px 32px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            transform: translateX(-40px);
+        }
+
+        .slide.active .game-item:nth-child(1) { transition-delay: 0.25s; opacity: 1; transform: translateX(0); }
+        .slide.active .game-item:nth-child(2) { transition-delay: 0.4s; opacity: 1; transform: translateX(0); }
+        .slide.active .game-item:nth-child(3) { transition-delay: 0.55s; opacity: 1; transform: translateX(0); }
+        .slide.active .game-item:nth-child(4) { transition-delay: 0.7s; opacity: 1; transform: translateX(0); }
+
+        .game-item:hover {
+            background: rgba(255,255,255,0.09);
+            transform: translateX(12px) scale(1.02);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .game-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .game-item:hover .game-icon {
+            transform: rotate(10deg) scale(1.15);
+        }
+
+        .game-icon.g1 { background: linear-gradient(135deg, #d4a5ff, #7b2ff7); }
+        .game-icon.g2 { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+        .game-icon.g3 { background: linear-gradient(135deg, #a8edea, #5b86e5); }
+        .game-icon.g4 { background: linear-gradient(135deg, #fbc2eb, #a6c1ee); }
+
+        .game-info { flex: 1; }
+
+        .game-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .game-tag {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 6px;
+        }
+
+        .game-tag.t1 { background: rgba(123,47,247,0.2); color: #c39bff; border: 1px solid rgba(123,47,247,0.3); }
+        .game-tag.t2 { background: rgba(238,90,36,0.2); color: #ff8c5a; border: 1px solid rgba(238,90,36,0.3); }
+        .game-tag.t3 { background: rgba(91,134,229,0.2); color: #8ab4f0; border: 1px solid rgba(91,134,229,0.3); }
+        .game-tag.t4 { background: rgba(166,193,238,0.2); color: #b8d0f0; border: 1px solid rgba(166,193,238,0.3); }
+
+        .game-tag-cai {
+            display: inline-block;
+            padding: 4px 14px;
+            background: rgba(255,193,7,0.15);
+            border: 1px solid rgba(255,193,7,0.3);
+            border-radius: 20px;
+            font-size: 12px;
+            color: #ffc107;
+            margin-top: 6px;
+            margin-left: 8px;
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .game-meme {
+            font-size: 32px;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .game-item:hover .game-meme {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        .game-note {
+            text-align: center;
+            margin-top: 28px;
+            color: rgba(255,255,255,0.4);
+            font-size: 16px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease 0.9s, transform 0.5s ease 0.9s;
+        }
+
+        .slide.active .game-note {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== 作品卡片（可点击跳转） ===== */
+        .slide-works {
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1b69 40%, #0d1b2a 100%);
+        }
+
+        .works-hint {
+            text-align: center;
+            font-size: 16px;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 36px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
+        }
+
+        .slide.active .works-hint {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 36px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .work-card {
+            position: relative;
+            display: block;
+            border-radius: 28px;
+            padding: 48px 36px;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.12);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            transform: translateY(40px) scale(0.92);
+            cursor: pointer;
+        }
+
+        .slide.active .work-card:nth-child(1) { transition-delay: 0.3s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .work-card:nth-child(2) { transition-delay: 0.5s; opacity: 1; transform: translateY(0) scale(1); }
+
+        /* 花海卡片 */
+        .work-flower {
+            background: linear-gradient(135deg, rgba(255,107,129,0.15) 0%, rgba(255,142,178,0.1) 50%, rgba(167,153,255,0.15) 100%);
+            backdrop-filter: blur(12px);
+        }
+
+        .work-flower:hover {
+            transform: translateY(-12px) scale(1.04);
+            box-shadow: 0 24px 70px rgba(255,107,129,0.25);
+            border-color: rgba(255,142,178,0.4);
+        }
+
+        /* 打地鼠卡片 */
+        .work-mole {
+            background: linear-gradient(135deg, rgba(67,233,123,0.12) 0%, rgba(56,249,215,0.1) 50%, rgba(74,153,255,0.15) 100%);
+            backdrop-filter: blur(12px);
+        }
+
+        .work-mole:hover {
+            transform: translateY(-12px) scale(1.04);
+            box-shadow: 0 24px 70px rgba(67,233,123,0.2);
+            border-color: rgba(67,233,123,0.35);
+        }
+
+        /* 卡片背景装饰 */
+        .work-bg-flower,
+        .work-bg-mole {
+            position: absolute;
+            top: -30%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.2;
+            z-index: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .work-bg-flower {
+            background: radial-gradient(circle, #ff6b81, #ff8ed0);
+        }
+
+        .work-bg-mole {
+            background: radial-gradient(circle, #43e97b, #38f9d7);
+        }
+
+        .work-card:hover .work-bg-flower,
+        .work-card:hover .work-bg-mole {
+            opacity: 0.35;
+        }
+
+        .work-emoji {
+            font-size: 64px;
+            margin-bottom: 20px;
+            display: block;
+            position: relative;
+            z-index: 1;
+            animation: emojiBounce 2.5s ease-in-out infinite;
+        }
+
+        .work-flower .work-emoji { animation-delay: 0s; }
+        .work-mole .work-emoji { animation-delay: 0.5s; }
+
+        .work-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .work-desc {
+            font-size: 15px;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.7;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .work-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .work-flower .work-btn {
+            background: linear-gradient(135deg, #ff6b81, #ff8ed0);
+            color: #fff;
+        }
+
+        .work-mole .work-btn {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: #0a0a1a;
+        }
+
+        .work-card:hover .work-btn {
+            transform: scale(1.08);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .work-arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .work-card:hover .work-arrow {
+            transform: translateX(4px);
+        }
+
+        /* ===== 技能标签 ===== */
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .skill-tag {
+            padding: 14px 28px;
+            background: rgba(102, 126, 234, 0.12);
+            border: 1px solid rgba(102, 126, 234, 0.25);
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #a8b8ff;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            transform: scale(0.7);
+            cursor: default;
+        }
+
+        .slide.active .skill-tag:nth-child(1) { transition-delay: 0.2s; opacity: 1; transform: scale(1); }
+        .slide.active .skill-tag:nth-child(2) { transition-delay: 0.3s; opacity: 1; transform: scale(1); }
+        .slide.active .skill-tag:nth-child(3) { transition-delay: 0.4s; opacity: 1; transform: scale(1); }
+        .slide.active .skill-tag:nth-child(4) { transition-delay: 0.5s; opacity: 1; transform: scale(1); }
+        .slide.active .skill-tag:nth-child(5) { transition-delay: 0.6s; opacity: 1; transform: scale(1); }
+        .slide.active .skill-tag:nth-child(6) { transition-delay: 0.7s; opacity: 1; transform: scale(1); }
+
+        .skill-tag:hover {
+            background: rgba(102, 126, 234, 0.3);
+            transform: scale(1.12) translateY(-4px);
+            box-shadow: 0 8px 24px rgba(102,126,234,0.3);
+            color: #fff;
+        }
+
+        .activity-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .activity-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 24px 28px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .slide.active .activity-item:nth-child(1) { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
+        .slide.active .activity-item:nth-child(2) { transition-delay: 0.55s; opacity: 1; transform: translateY(0); }
+        .slide.active .activity-item:nth-child(3) { transition-delay: 0.7s; opacity: 1; transform: translateY(0); }
+        .slide.active .activity-item:nth-child(4) { transition-delay: 0.85s; opacity: 1; transform: translateY(0); }
+
+        .activity-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(6px);
+            border-color: rgba(102,126,234,0.2);
+        }
+
+        .activity-icon {
+            font-size: 36px;
+            animation: iconWiggle 3s ease-in-out infinite;
+        }
+
+        .activity-item:nth-child(2) .activity-icon { animation-delay: 0.5s; }
+        .activity-item:nth-child(3) .activity-icon { animation-delay: 1s; }
+        .activity-item:nth-child(4) .activity-icon { animation-delay: 1.5s; }
+
+        .activity-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .activity-sub {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+
+        /* ===== 大学生活感悟页 ===== */
+        .slide-life {
+            background: linear-gradient(135deg, #1a1a2e 0%, #1a0a2e 50%, #0d1b2a 100%);
+        }
+
+        .life-quote {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            color: #fff;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s;
+        }
+
+        .slide.active .life-quote {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .life-quote .highlight {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .life-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .life-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            transform: translateY(30px) rotateX(20deg);
+            transform-style: preserve-3d;
+        }
+
+        .slide.active .life-card:nth-child(1) { transition-delay: 0.4s; opacity: 1; transform: translateY(0) rotateX(0); }
+        .slide.active .life-card:nth-child(2) { transition-delay: 0.6s; opacity: 1; transform: translateY(0) rotateX(0); }
+        .slide.active .life-card:nth-child(3) { transition-delay: 0.8s; opacity: 1; transform: translateY(0) rotateX(0); }
+
+        .life-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(102,126,234,0.2);
+            border-color: rgba(102,126,234,0.3);
+        }
+
+        .life-card-emoji {
+            font-size: 44px;
+            margin-bottom: 16px;
+            display: block;
+            animation: emojiBounce 2.5s ease-in-out infinite;
+        }
+
+        .life-card:nth-child(1) .life-card-emoji { animation-delay: 0s; }
+        .life-card:nth-child(2) .life-card-emoji { animation-delay: 0.4s; }
+        .life-card:nth-child(3) .life-card-emoji { animation-delay: 0.8s; }
+
+        .life-card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .life-card-text {
+            font-size: 15px;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.7;
+        }
+
+        /* ===== 期待与目标页 ===== */
+        .slide-goals {
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1b69 50%, #1a1a2e 100%);
+        }
+
+        .goals-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .goal-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .slide.active .goal-section:nth-child(1) { transition-delay: 0.3s; opacity: 1; transform: translateY(0); }
+        .slide.active .goal-section:nth-child(2) { transition-delay: 0.5s; opacity: 1; transform: translateY(0); }
+
+        .goal-section-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .goal-section-title .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .goal-section-title .dot.expect { background: #667eea; box-shadow: 0 0 12px #667eea; }
+        .goal-section-title .dot.hope { background: #43e97b; box-shadow: 0 0 12px #43e97b; }
+
+        .goal-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .goal-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .slide.active .goal-section:nth-child(1) .goal-item:nth-child(1) { transition-delay: 0.45s; opacity: 1; transform: translateX(0); }
+        .slide.active .goal-section:nth-child(1) .goal-item:nth-child(2) { transition-delay: 0.6s; opacity: 1; transform: translateX(0); }
+        .slide.active .goal-section:nth-child(1) .goal-item:nth-child(3) { transition-delay: 0.75s; opacity: 1; transform: translateX(0); }
+        .slide.active .goal-section:nth-child(2) .goal-item:nth-child(1) { transition-delay: 0.55s; opacity: 1; transform: translateX(0); }
+        .slide.active .goal-section:nth-child(2) .goal-item:nth-child(2) { transition-delay: 0.7s; opacity: 1; transform: translateX(0); }
+        .slide.active .goal-section:nth-child(2) .goal-item:nth-child(3) { transition-delay: 0.85s; opacity: 1; transform: translateX(0); }
+
+        .goal-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(6px);
+        }
+
+        .goal-emoji {
+            font-size: 28px;
+            width: 40px;
+            text-align: center;
+        }
+
+        .goal-text {
+            font-size: 17px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.85);
+        }
+
+        /* ===== 给学弟学妹的建议页（2×2网格） ===== */
+        .slide-tips {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 50%, #1a1a2e 100%);
+        }
+
+        .tips-intro {
+            text-align: center;
+            font-size: 16px;
+            color: rgba(255,255,255,0.45);
+            margin-bottom: 36px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease 0.15s, transform 0.5s ease 0.15s;
+        }
+
+        .slide.active .tips-intro {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .tip-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 32px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide.active .tip-card:nth-child(1) { transition-delay: 0.25s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .tip-card:nth-child(2) { transition-delay: 0.4s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .tip-card:nth-child(3) { transition-delay: 0.55s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .tip-card:nth-child(4) { transition-delay: 0.7s; opacity: 1; transform: translateY(0) scale(1); }
+
+        .tip-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+        }
+
+        .tip-card.c1 { border-top: 3px solid #f093fb; }
+        .tip-card.c1:hover { box-shadow: 0 16px 48px rgba(240,147,251,0.2); }
+        .tip-card.c2 { border-top: 3px solid #4facfe; }
+        .tip-card.c2:hover { box-shadow: 0 16px 48px rgba(79,172,254,0.2); }
+        .tip-card.c3 { border-top: 3px solid #43e97b; }
+        .tip-card.c3:hover { box-shadow: 0 16px 48px rgba(67,233,123,0.2); }
+        .tip-card.c4 { border-top: 3px solid #fa709a; }
+        .tip-card.c4:hover { box-shadow: 0 16px 48px rgba(250,112,154,0.2); }
+
+        .tip-card .tip-card-icon {
+            font-size: 36px;
+            animation: emojiBounce 2.5s ease-in-out infinite;
+        }
+
+        .tip-card:nth-child(1) .tip-card-icon { animation-delay: 0s; }
+        .tip-card:nth-child(2) .tip-card-icon { animation-delay: 0.3s; }
+        .tip-card:nth-child(3) .tip-card-icon { animation-delay: 0.6s; }
+        .tip-card:nth-child(4) .tip-card-icon { animation-delay: 0.9s; }
+
+        .tip-card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .tip-card-desc {
+            font-size: 15px;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.7;
+        }
+
+        .tip-card-desc strong {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .tip-card-tag {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            align-self: flex-start;
+            margin-top: 4px;
+        }
+
+        .tip-card.c1 .tip-card-tag { background: rgba(240,147,251,0.15); color: #f093fb; border: 1px solid rgba(240,147,251,0.3); }
+        .tip-card.c2 .tip-card-tag { background: rgba(79,172,254,0.15); color: #4facfe; border: 1px solid rgba(79,172,254,0.3); }
+        .tip-card.c3 .tip-card-tag { background: rgba(67,233,123,0.15); color: #43e97b; border: 1px solid rgba(67,233,123,0.3); }
+        .tip-card.c4 .tip-card-tag { background: rgba(250,112,154,0.15); color: #fa709a; border: 1px solid rgba(250,112,154,0.3); }
+
+        .tip-card::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            filter: blur(24px);
+            opacity: 0.12;
+            z-index: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .tip-card.c1::after { background: #f093fb; }
+        .tip-card.c2::after { background: #4facfe; }
+        .tip-card.c3::after { background: #43e97b; }
+        .tip-card.c4::after { background: #fa709a; }
+
+        .tip-card:hover::after {
+            opacity: 0.25;
+        }
+
+        .tip-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== 班委介绍页（图标汇集） ===== */
+        .slide-committee {
+            background: linear-gradient(135deg, #0f0c29 0%, #1a1a3e 50%, #16213e 100%);
+        }
+
+        .committee-hint {
+            text-align: center;
+            font-size: 16px;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 32px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease 0.15s, transform 0.5s ease 0.15s;
+        }
+
+        .slide.active .committee-hint {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .committee-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .committee-btn {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px;
+            padding: 24px 16px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide.active .committee-btn:nth-child(1) { transition-delay: 0.2s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .committee-btn:nth-child(2) { transition-delay: 0.3s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .committee-btn:nth-child(3) { transition-delay: 0.4s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .committee-btn:nth-child(4) { transition-delay: 0.5s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .committee-btn:nth-child(5) { transition-delay: 0.35s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .committee-btn:nth-child(6) { transition-delay: 0.45s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .committee-btn:nth-child(7) { transition-delay: 0.55s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .committee-btn:nth-child(8) { transition-delay: 0.65s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .committee-btn:nth-child(9) { transition-delay: 0.5s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .committee-btn:nth-child(10) { transition-delay: 0.6s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .committee-btn:nth-child(11) { transition-delay: 0.7s; opacity: 1; transform: translateY(0) scale(1); }
+
+        .committee-btn:hover {
+            transform: translateY(-8px) scale(1.06);
+        }
+
+        .committee-btn .btn-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin: 0 auto 10px;
+            animation: iconWiggle 3s ease-in-out infinite;
+        }
+
+        .committee-btn:nth-child(1) .btn-icon { animation-delay: 0s; }
+        .committee-btn:nth-child(2) .btn-icon { animation-delay: 0.3s; }
+        .committee-btn:nth-child(3) .btn-icon { animation-delay: 0.6s; }
+        .committee-btn:nth-child(4) .btn-icon { animation-delay: 0.9s; }
+        .committee-btn:nth-child(5) .btn-icon { animation-delay: 1.2s; }
+        .committee-btn:nth-child(6) .btn-icon { animation-delay: 1.5s; }
+        .committee-btn:nth-child(7) .btn-icon { animation-delay: 1.8s; }
+        .committee-btn:nth-child(8) .btn-icon { animation-delay: 2.1s; }
+        .committee-btn:nth-child(9) .btn-icon { animation-delay: 2.4s; }
+        .committee-btn:nth-child(10) .btn-icon { animation-delay: 2.7s; }
+        .committee-btn:nth-child(11) .btn-icon { animation-delay: 3.0s; }
+
+        .btn-icon.bc1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .btn-icon.bc2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .btn-icon.bc3 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .btn-icon.bc4 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .btn-icon.bc5 { background: linear-gradient(135deg, #fa709a, #fee140); }
+        .btn-icon.bc6 { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+        .btn-icon.bc7 { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+        .btn-icon.bc8 { background: linear-gradient(135deg, #ff7e5f, #feb47b); }
+        .btn-icon.bc9 { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+        .btn-icon.bc10 { background: linear-gradient(135deg, #d4a5ff, #7b2ff7); }
+        .btn-icon.bc11 { background: linear-gradient(135deg, #f7971e, #ffd200); }
+
+        .committee-btn .btn-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .committee-btn .btn-sub {
+            font-size: 11px;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.4;
+        }
+
+        .committee-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 18px 18px 0 0;
+        }
+
+        .committee-btn:nth-child(1)::before { background: linear-gradient(90deg, #667eea, #764ba2); }
+        .committee-btn:nth-child(2)::before { background: linear-gradient(90deg, #f093fb, #f5576c); }
+        .committee-btn:nth-child(3)::before { background: linear-gradient(90deg, #4facfe, #00f2fe); }
+        .committee-btn:nth-child(4)::before { background: linear-gradient(90deg, #43e97b, #38f9d7); }
+        .committee-btn:nth-child(5)::before { background: linear-gradient(90deg, #fa709a, #fee140); }
+        .committee-btn:nth-child(6)::before { background: linear-gradient(90deg, #a18cd1, #fbc2eb); }
+        .committee-btn:nth-child(7)::before { background: linear-gradient(90deg, #ff9a9e, #fad0c4); }
+        .committee-btn:nth-child(8)::before { background: linear-gradient(90deg, #ff7e5f, #feb47b); }
+        .committee-btn:nth-child(9)::before { background: linear-gradient(90deg, #a8edea, #fed6e3); }
+        .committee-btn:nth-child(10)::before { background: linear-gradient(90deg, #d4a5ff, #7b2ff7); }
+        .committee-btn:nth-child(11)::before { background: linear-gradient(90deg, #f7971e, #ffd200); }
+
+        .committee-btn::after {
+            content: '';
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            filter: blur(16px);
+            opacity: 0.1;
+            transition: opacity 0.4s ease;
+        }
+
+        .committee-btn:nth-child(1)::after { background: #667eea; }
+        .committee-btn:nth-child(2)::after { background: #f093fb; }
+        .committee-btn:nth-child(3)::after { background: #4facfe; }
+        .committee-btn:nth-child(4)::after { background: #43e97b; }
+        .committee-btn:nth-child(5)::after { background: #fa709a; }
+        .committee-btn:nth-child(6)::after { background: #a18cd1; }
+        .committee-btn:nth-child(7)::after { background: #ff9a9e; }
+        .committee-btn:nth-child(8)::after { background: #ff7e5f; }
+        .committee-btn:nth-child(9)::after { background: #a8edea; }
+        .committee-btn:nth-child(10)::after { background: #d4a5ff; }
+        .committee-btn:nth-child(11)::after { background: #f7971e; }
+
+        .committee-btn:hover::after {
+            opacity: 0.25;
+        }
+
+        .committee-btn:nth-child(1):hover { border-color: rgba(102,126,234,0.4); box-shadow: 0 12px 36px rgba(102,126,234,0.2); }
+        .committee-btn:nth-child(2):hover { border-color: rgba(240,147,251,0.4); box-shadow: 0 12px 36px rgba(240,147,251,0.2); }
+        .committee-btn:nth-child(3):hover { border-color: rgba(79,172,254,0.4); box-shadow: 0 12px 36px rgba(79,172,254,0.2); }
+        .committee-btn:nth-child(4):hover { border-color: rgba(67,233,123,0.4); box-shadow: 0 12px 36px rgba(67,233,123,0.2); }
+        .committee-btn:nth-child(5):hover { border-color: rgba(250,112,154,0.4); box-shadow: 0 12px 36px rgba(250,112,154,0.2); }
+        .committee-btn:nth-child(6):hover { border-color: rgba(161,140,209,0.4); box-shadow: 0 12px 36px rgba(161,140,209,0.2); }
+        .committee-btn:nth-child(7):hover { border-color: rgba(255,154,158,0.4); box-shadow: 0 12px 36px rgba(255,154,158,0.2); }
+        .committee-btn:nth-child(8):hover { border-color: rgba(255,126,95,0.4); box-shadow: 0 12px 36px rgba(255,126,95,0.2); }
+        .committee-btn:nth-child(9):hover { border-color: rgba(168,237,234,0.4); box-shadow: 0 12px 36px rgba(168,237,234,0.2); }
+        .committee-btn:nth-child(10):hover { border-color: rgba(212,165,255,0.4); box-shadow: 0 12px 36px rgba(212,165,255,0.2); }
+        .committee-btn:nth-child(11):hover { border-color: rgba(247,151,30,0.4); box-shadow: 0 12px 36px rgba(247,151,30,0.2); }
+
+        .committee-footer-hint {
+            margin-top: 24px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.3);
+            opacity: 0;
+            transition: opacity 0.5s ease 0.8s;
+        }
+
+        .slide.active .committee-footer-hint {
+            opacity: 1;
+        }
+
+        /* ===== 模态框 ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.35s ease, visibility 0.35s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: linear-gradient(135deg, rgba(30,30,60,0.95) 0%, rgba(20,20,50,0.95) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 24px;
+            padding: 40px 36px 32px;
+            max-width: 540px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(40px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-card::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-card::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.15);
+            border-radius: 3px;
+        }
+
+        .modal-top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .modal-top-bar.mc1 { background: linear-gradient(90deg, #667eea, #764ba2); }
+        .modal-top-bar.mc2 { background: linear-gradient(90deg, #f093fb, #f5576c); }
+        .modal-top-bar.mc3 { background: linear-gradient(90deg, #4facfe, #00f2fe); }
+        .modal-top-bar.mc4 { background: linear-gradient(90deg, #43e97b, #38f9d7); }
+        .modal-top-bar.mc5 { background: linear-gradient(90deg, #fa709a, #fee140); }
+        .modal-top-bar.mc6 { background: linear-gradient(90deg, #a18cd1, #fbc2eb); }
+        .modal-top-bar.mc7 { background: linear-gradient(90deg, #ff9a9e, #fad0c4); }
+        .modal-top-bar.mc8 { background: linear-gradient(90deg, #ff7e5f, #feb47b); }
+        .modal-top-bar.mc9 { background: linear-gradient(90deg, #a8edea, #fed6e3); }
+        .modal-top-bar.mc10 { background: linear-gradient(90deg, #d4a5ff, #7b2ff7); }
+        .modal-top-bar.mc11 { background: linear-gradient(90deg, #f7971e, #ffd200); }
+
+        .modal-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .modal-icon.mi1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .modal-icon.mi2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .modal-icon.mi3 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .modal-icon.mi4 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .modal-icon.mi5 { background: linear-gradient(135deg, #fa709a, #fee140); }
+        .modal-icon.mi6 { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+        .modal-icon.mi7 { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+        .modal-icon.mi8 { background: linear-gradient(135deg, #ff7e5f, #feb47b); }
+        .modal-icon.mi9 { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+        .modal-icon.mi10 { background: linear-gradient(135deg, #d4a5ff, #7b2ff7); }
+        .modal-icon.mi11 { background: linear-gradient(135deg, #f7971e, #ffd200); }
+
+        .modal-name {
+            font-size: 28px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .modal-tag {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .modal-tag.mt1 { background: rgba(102,126,234,0.2); color: #a8b8ff; border: 1px solid rgba(102,126,234,0.3); }
+        .modal-tag.mt2 { background: rgba(240,147,251,0.2); color: #f0a0ff; border: 1px solid rgba(240,147,251,0.3); }
+        .modal-tag.mt3 { background: rgba(79,172,254,0.2); color: #8ab4f0; border: 1px solid rgba(79,172,254,0.3); }
+        .modal-tag.mt4 { background: rgba(67,233,123,0.2); color: #5dd789; border: 1px solid rgba(67,233,123,0.3); }
+        .modal-tag.mt5 { background: rgba(250,112,154,0.2); color: #ff8eb8; border: 1px solid rgba(250,112,154,0.3); }
+        .modal-tag.mt6 { background: rgba(161,140,209,0.2); color: #c4b5e0; border: 1px solid rgba(161,140,209,0.3); }
+        .modal-tag.mt7 { background: rgba(255,154,158,0.2); color: #ffb0b8; border: 1px solid rgba(255,154,158,0.3); }
+        .modal-tag.mt8 { background: rgba(255,126,95,0.2); color: #ff9e80; border: 1px solid rgba(255,126,95,0.3); }
+        .modal-tag.mt9 { background: rgba(168,237,234,0.2); color: #a0e0dc; border: 1px solid rgba(168,237,234,0.3); }
+        .modal-tag.mt10 { background: rgba(212,165,255,0.2); color: #d4a5ff; border: 1px solid rgba(212,165,255,0.3); }
+        .modal-tag.mt11 { background: rgba(247,151,30,0.2); color: #ffb84d; border: 1px solid rgba(247,151,30,0.3); }
+
+        .modal-section {
+            margin-bottom: 16px;
+        }
+
+        .modal-section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-duty {
+            font-size: 15px;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.8;
+        }
+
+        .modal-req {
+            font-size: 15px;
+            color: #ffd700;
+            font-weight: 700;
+            line-height: 1.8;
+            padding: 12px 16px;
+            border-left: 3px solid #ffd700;
+            background: rgba(255,215,0,0.06);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .modal-tip {
+            margin-top: 16px;
+            padding: 14px 18px;
+            background: rgba(255,50,50,0.08);
+            border: 1px solid rgba(255,80,80,0.28);
+            border-radius: 12px;
+            font-size: 15px;
+            color: #ffaaaa;
+            font-weight: 700;
+            text-align: center;
+            display: none;
+        }
+
+        .modal-tip .tip-bulb {
+            display: block;
+            font-size: 30px;
+            margin-bottom: 10px;
+            animation: tipBulbGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes tipBulbGlow {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(255,80,80,0.5)); }
+            50% { filter: drop-shadow(0 0 12px rgba(255,60,60,0.9)); }
+        }
+
+        /* 浮动关闭按钮 */
+        .modal-close-float {
+            position: fixed;
+            bottom: 36px;
+            right: 36px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.5) rotate(-90deg);
+            transition: opacity 0.35s ease 0.15s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s, visibility 0.35s;
+            box-shadow: 0 8px 32px rgba(102,126,234,0.4);
+        }
+
+        .modal-close-float.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .modal-close-float:hover {
+            transform: scale(1.15) rotate(90deg);
+            box-shadow: 0 12px 48px rgba(102,126,234,0.6);
+        }
+
+        /* ===== 联系方式页 ===== */
+        .slide-contact {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        }
+
+        .contact-container {
+            display: flex;
+            gap: 36px;
+            align-items: stretch;
+            justify-content: center;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        .contact-card {
+            flex: 1;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 28px;
+            padding: 36px 28px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+        }
+
+        .slide.active .contact-card:nth-child(1) { transition-delay: 0.25s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .contact-card:nth-child(2) { transition-delay: 0.4s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .contact-card:nth-child(3) { transition-delay: 0.55s; opacity: 1; transform: translateY(0) scale(1); }
+
+        .contact-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 24px 70px rgba(0,0,0,0.35);
+        }
+
+        .contact-card.qq:hover { border-color: rgba(74, 153, 255, 0.45); }
+        .contact-card.phone:hover { border-color: rgba(255, 80, 80, 0.45); }
+        .contact-card.wechat:hover { border-color: rgba(67, 198, 111, 0.45); }
+
+        .contact-icon-big {
+            width: 68px;
+            height: 68px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            margin: 0 auto 16px;
+            animation: iconWiggle 3s ease-in-out infinite;
+        }
+
+        .contact-icon-big.qq-bg { background: linear-gradient(135deg, #4a99ff, #2b6ee5); }
+        .contact-icon-big.phone-bg { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+        .contact-icon-big.wechat-bg { background: linear-gradient(135deg, #43c66f, #2ba84a); }
+
+        .contact-label {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 8px;
+        }
+
+        .contact-name {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .contact-id {
+            font-size: 17px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 16px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .contact-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .contact-badge.qq-badge { background: rgba(74,153,255,0.2); color: #6db3ff; }
+        .contact-badge.phone-badge { background: rgba(255,80,80,0.2); color: #ff8c8c; }
+        .contact-badge.wechat-badge { background: rgba(67,198,111,0.2); color: #5dd789; }
+
+        /* 二维码 */
+        .qr-wrapper {
+            margin: 16px auto 0;
+            border-radius: 16px;
+            background: #ffffff;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255,255,255,0.15);
+            width: fit-content;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover .qr-wrapper {
+            border-color: rgba(255,255,255,0.35);
+            box-shadow: 0 0 30px rgba(255,255,255,0.1);
+        }
+
+        .qr-wrapper img {
+            display: block;
+            width: auto;
+            height: auto;
+            max-width: 180px;
+            max-height: 220px;
+            object-fit: contain;
+        }
+
+        .contact-note {
+            margin-top: 12px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.4);
+        }
+
+        /* ===== 导航 ===== */
+        .nav-dots {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transform: scale(1.4);
+            box-shadow: 0 0 12px rgba(102,126,234,0.5);
+        }
+
+        .nav-dot:hover:not(.active) {
+            background: rgba(255,255,255,0.4);
+            transform: scale(1.2);
+        }
+
+        .nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 22px;
+            color: rgba(255,255,255,0.6);
+            transition: all 0.3s ease;
+        }
+
+        .nav-arrow:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 20px rgba(102,126,234,0.3);
+        }
+
+        .nav-arrow.left { left: 24px; }
+        .nav-arrow.right { right: 24px; }
+
+        .keyboard-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 24px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.25);
+            z-index: 100;
+        }
+
+        /* ===== 音乐播放器 ===== */
+        .music-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 20px;
+            color: rgba(255,255,255,0.7);
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .music-btn:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 0 16px rgba(102,126,234,0.3);
+        }
+
+        .music-btn.muted {
+            color: rgba(255,100,100,0.8);
+            border-color: rgba(255,100,100,0.3);
+        }
+
+        .music-btn .music-icon {
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .music-btn:not(.muted) .music-icon {
+            animation: musicPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes musicPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .music-ripple {
+            position: fixed;
+            bottom: 20px;
+            left: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid rgba(102,126,234,0.4);
+            z-index: 99;
+            pointer-events: none;
+            animation: rippleExpand 2s ease-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes rippleExpand {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        .music-btn.muted ~ .music-ripple {
+            display: none;
+        }
+
+        .music-hint {
+            position: fixed;
+            bottom: 72px;
+            left: 24px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.35);
+            z-index: 100;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            animation: hintFade 2s ease-in-out infinite;
+        }
+
+        .music-hint.hidden {
+            opacity: 0;
+        }
+
+        @keyframes hintFade {
+            0%, 100% { opacity: 0.35; }
+            50% { opacity: 0.7; }
+        }
+
+        /* ===== 进度条 ===== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #43e97b);
+            background-size: 200% 100%;
+            z-index: 200;
+            transition: width 0.5s ease;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        /* ===== 结束页 ===== */
+        .slide-end {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            text-align: center;
+        }
+
+        .end-emoji {
+            font-size: 88px;
+            margin-bottom: 24px;
+            animation: wave 2s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-15deg) scale(1.1); }
+            75% { transform: rotate(15deg) scale(1.1); }
+        }
+
+        .end-text {
+            font-size: 40px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 16px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s;
+        }
+
+        .slide.active .end-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .end-sub {
+            font-size: 20px;
+            color: rgba(255,255,255,0.5);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease 0.5s, transform 0.6s ease 0.5s;
+        }
+
+        .slide.active .end-sub {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .end-sparkle {
+            font-size: 28px;
+            margin-top: 30px;
+            opacity: 0;
+            animation: sparkle 2s ease-in-out infinite 1s;
+            transition: opacity 0.6s ease 0.7s;
+        }
+
+        .slide.active .end-sparkle {
+            opacity: 1;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* ===== 页面切换特效覆盖层 ===== */
+        .page-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, rgba(102,126,234,0.15) 0%, transparent 70%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 99;
+            transition: opacity 0.3s ease;
+        }
+
+        .page-flash.active {
+            opacity: 1;
+            transition: opacity 0.15s ease;
+        }
+        /* ===== 摄影作品展示页 ===== */
+        .slide-photo {
+            background: linear-gradient(135deg, #1a0a2e 0%, #0d1b2a 50%, #1a1a2e 100%);
+        }
+        .photo-hint {
+            text-align: center;
+            font-size: 16px;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 28px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
+        }
+        .slide.active .photo-hint {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .photo-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            aspect-ratio: 4 / 3;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            transform: translateY(30px) scale(0.92);
+        }
+        .slide.active .photo-card:nth-child(1) { transition-delay: 0.25s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .photo-card:nth-child(2) { transition-delay: 0.35s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .photo-card:nth-child(3) { transition-delay: 0.45s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .photo-card:nth-child(4) { transition-delay: 0.55s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .photo-card:nth-child(5) { transition-delay: 0.65s; opacity: 1; transform: translateY(0) scale(1); }
+        .slide.active .photo-card:nth-child(6) { transition-delay: 0.75s; opacity: 1; transform: translateY(0) scale(1); }
+        .photo-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 16px 48px rgba(102,126,234,0.3);
+            border-color: rgba(102,126,234,0.4);
+        }
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        .photo-card:hover img {
+            transform: scale(1.08);
+        }
+        .photo-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px 16px 12px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .photo-card:hover .photo-overlay {
+            opacity: 1;
+        }
+        .photo-overlay span {
+            font-size: 13px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 600;
+        }
+        /* ===== 图片灯箱 ===== */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.88);
+            backdrop-filter: blur(10px);
+            z-index: 5000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.35s ease, visibility 0.35s;
+        }
+        .lightbox-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .lightbox-img {
+            max-width: 90vw;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .lightbox-overlay.active .lightbox-img {
+            transform: scale(1);
+        }
+        .lightbox-close {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5001;
+            transition: all 0.3s ease;
+        }
+        .lightbox-close:hover {
+            background: rgba(255,255,255,0.2);
+            transform: rotate(90deg) scale(1.1);
+        }
+        .lightbox-counter {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 15px;
+            color: rgba(255,255,255,0.6);
+            z-index: 5001;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 顶部进度条 -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- 页面切换闪光层 -->
+<div class="page-flash" id="pageFlash"></div>
+
+<div class="slides-container" id="slidesContainer">
+
+    <!-- ===== 第1页：封面 ===== -->
+    <div class="slide slide-cover active" data-index="0">
+        <div class="grid-bg"></div>
+        <div class="glow-orb orb1"></div>
+        <div class="glow-orb orb2"></div>
+        <div class="particles"></div>
+        <div class="cover-title">你好，我是你们的班助</div>
+        <div class="cover-subtitle">广安职业技术学院 · 电子与信息工程学院</div>
+        <div class="cover-name">万俊林</div>
+        <div class="cover-badge">信息安全技术应用 · 2025级</div>
+    </div>
+
+    <!-- ===== 第2页：个人档案 ===== -->
+    <div class="slide slide-content" data-index="1">
+        <div class="grid-bg"></div>
+        <div class="glow-orb orb3"></div>
+        <div class="particles"></div>
+        <div class="slide-header">📋 个人档案</div>
+        <div class="content-wrapper">
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon school">🏫</div>
+                    <div class="info-text">
+                        <label>学校</label>
+                        <value>广安职业技术学院</value>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon college">🎓</div>
+                    <div class="info-text">
+                        <label>学院</label>
+                        <value>电子与信息工程学院</value>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon major">🔐</div>
+                    <div class="info-text">
+                        <label>专业</label>
+                        <value>信息安全技术应用</value>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon grade">📅</div>
+                    <div class="info-text">
+                        <label>年级</label>
+                        <value>大二（2025级）</value>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 第3页：兴趣爱好 ===== -->
+    <div class="slide slide-content" data-index="2">
+        <div class="grid-bg"></div>
+        <div class="particles"></div>
+        <div class="slide-header">🏃 兴趣爱好</div>
+        <div class="content-wrapper">
+            <div class="hobby-grid">
+                <div class="hobby-card">
+                    <span class="hobby-emoji">🚴</span>
+                    <div class="hobby-name">骑行</div>
+                    <div class="hobby-desc">享受风在耳边呼啸的感觉<br>用车轮丈量每一段路</div>
+                </div>
+                <div class="hobby-card">
+                    <span class="hobby-emoji">🏸</span>
+                    <div class="hobby-name">羽毛球</div>
+                    <div class="hobby-desc">球场上的每一次挥拍<br>都是快乐的释放</div>
+                </div>
+                <div class="hobby-card">
+                    <span class="hobby-emoji">👟</span>
+                    <div class="hobby-name">跑步</div>
+                    <div class="hobby-desc">用脚步感受城市脉搏<br>每一步都是自律</div>
+                </div>
+                <!-- 新增的摄影爱好卡片 -->
+                <div class="hobby-card">
+                    <span class="hobby-emoji">📷</span>
+                    <div class="hobby-name">摄影</div>
+                    <div class="hobby-desc">用镜头捕捉光影瞬间<br>记录生活里的每一份美好</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 第4页：游戏日常 ===== -->
+    <div class="slide slide-content" data-index="3">
+        <div class="grid-bg"></div>
+        <div class="particles"></div>
+        <div class="slide-header">🎮 游戏日常</div>
+        <div class="content-wrapper">
+            <div class="game-list">
+                <div class="game-item">
+                    <div class="game-icon g1">⚔️</div>
+                    <div class="game-info">
+                        <div class="game-name">王者荣耀</div>
+                        <div class="game-tag t1">峡谷5v5 · 偶尔上分</div>
+                        <span class="game-tag-cai">⚠️ 玩得菜</span>
+                    </div>
+                    <div class="game-meme">🏳️</div>
+                </div>
+                <div class="game-item">
+                    <div class="game-icon g2">🔫</div>
+                    <div class="game-info">
+                        <div class="game-name">无畏契约（VALORANT）</div>
+                        <div class="game-tag t2">FPS射击 · 瞄准练习中</div>
+                        <span class="game-tag-cai">⚠️ 玩得菜</span>
+                    </div>
+                    <div class="game-meme">🎯</div>
+                </div>
+                <div class="game-item">
+                    <div class="game-icon g3">🗡️</div>
+                    <div class="game-info">
+                        <div class="game-name">烟云十六声</div>
+                        <div class="game-tag t3">国风武侠 · 沉浸式体验</div>
+                        <span class="game-tag-cai">⚠️ 玩得菜</span>
+                    </div>
+                    <div class="game-meme">🏔️</div>
+                </div>
+                <div class="game-item">
+                    <div class="game-icon g4">♟️</div>
+                    <div class="game-info">
+                        <div class="game-name">金铲铲之战</div>
+                        <div class="game-tag t4">自走棋策略 · 快乐就完事了</div>
+                        <span class="game-tag-cai">⚠️ 玩得菜</span>
+                    </div>
+                    <div class="game-meme">🥲</div>
+                </div>
+            </div>
+            <p class="game-note">
+                ⚠️ 温馨提示：以上游戏本人全部玩得比较菜，真的都很菜，欢迎大佬带飞 🙏🥲
+            </p>
+        </div>
+    </div>
+
+    <!-- ===== 第5页：技能与日常 ===== -->
+    <div class="slide slide-content" data-index="4">
+        <div class="grid-bg"></div>
+        <div class="glow-orb orb1"></div>
+        <div class="particles"></div>
+        <div class="slide-header">💻 技能 & 日常</div>
+        <div class="content-wrapper">
+            <div class="skill-tags">
+                <div class="skill-tag">🐍 Python</div>
+                <div class="skill-tag">🌐 HTML</div>
+                <div class="skill-tag">🎮 小游戏开发</div>
+                <div class="skill-tag">📷 摄影</div>
+                <div class="skill-tag">🤝 志愿服务</div>
+                <div class="skill-tag">🎯 社团活动</div>
+            </div>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon">🐍</div>
+                    <div>
+                        <div class="activity-text">Python小游戏开发</div>
+                        <div class="activity-sub">闲暇时光用代码创造乐趣</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🌐</div>
+                    <div>
+                        <div class="activity-text">HTML网页制作</div>
+                        <div class="activity-sub">前端探索，从页面开始</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">📷</div>
+                    <div>
+                        <div class="activity-text">摄影社团成员</div>
+                        <div class="activity-sub">用镜头记录美好瞬间</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🤝</div>
+                    <div>
+                        <div class="activity-text">志愿服务 & 社团活动</div>
+                        <div class="activity-sub">热心公益，丰富校园生活</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 第6页：我的作品 ===== -->
+    <div class="slide slide-works" data-index="5">
+        <div class="grid-bg"></div>
+        <div class="glow-orb orb1"></div>
+        <div class="particles"></div>
+        <div class="slide-header">🌟 我的作品</div>
+        <div class="content-wrapper">
+            <div class="works-hint">点击卡片 → 新标签页打开，原页面不关闭 👇</div>
+            <div class="works-grid">
+                <a class="work-card work-flower" href="花海/index.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                    <div class="work-bg-flower"></div>
+                    <div class="work-emoji">🌸</div>
+                    <div class="work-title">花海 · 浪漫网页</div>
+                    <div class="work-desc">用代码种出一片花海<br>送给每一个心中有浪漫的人</div>
+                    <div class="work-btn">
+                        <span>点击进入</span>
+                        <span class="work-arrow">↗</span>
+                    </div>
+                </a>
+                <a class="work-card work-mole" href="打地鼠.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                    <div class="work-bg-mole"></div>
+                    <div class="work-emoji">🔨</div>
+                    <div class="work-title">打地鼠 · 小游戏</div>
+                    <div class="work-desc">手速与反应的较量<br>休闲娱乐，无聊时来一局</div>
+                    <div class="work-btn">
+                        <span>点击开玩</span>
+                        <span class="work-arrow">↗</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 第7页：摄影作品展示 ===== -->
+    <div class="slide slide-photo" data-index="6">
+        <div class="grid-bg"></div>
+        <div class="glow-orb orb2"></div>
+        <div class="particles"></div>
+        <div class="slide-header">📷 摄影作品展示</div>
+        <div class="content-wrapper">
+            <div class="photo-hint">用镜头记录光影瞬间，点击图片可放大查看 🔍</div>
+            <div class="photo-grid">
+                <div class="photo-card" data-src="https://aka.doubaocdn.com/s/i5pUV2AZ2V">
+                    <img src="https://aka.doubaocdn.com/s/i5pUV2AZ2V" alt="窗外的蓝天白云">
+                    <div class="photo-overlay"><span>窗外的蓝天白云</span></div>
+                </div>
+                <div class="photo-card" data-src="https://aka.doubaocdn.com/s/TRq8XhQpzS">
+                    <img src="https://aka.doubaocdn.com/s/TRq8XhQpzS" alt="孝善之乡·灯笼夜景">
+                    <div class="photo-overlay"><span>孝善之乡 · 灯笼夜景</span></div>
+                </div>
+                <div class="photo-card" data-src="https://aka.doubaocdn.com/s/6TTpfYSllB">
+                    <img src="https://aka.doubaocdn.com/s/6TTpfYSllB" alt="黄昏剪影">
+                    <div class="photo-overlay"><span>黄昏剪影</span></div>
+                </div>
+                <div class="photo-card" data-src="https://aka.doubaocdn.com/s/AYPDpRiwl7">
+                    <img src="https://aka.doubaocdn.com/s/AYPDpRiwl7" alt="城市黄昏">
+                    <div class="photo-overlay"><span>城市黄昏</span></div>
+                </div>
+                <div class="photo-card" data-src="https://aka.doubaocdn.com/s/DyqceVeCL6">
+                    <img src="https://aka.doubaocdn.com/s/DyqceVeCL6" alt="漫展合影">
+                    <div class="photo-overlay"><span>漫展合影</span></div>
+                </div>
+                <div class="photo-card" data-src="https://aka.doubaocdn.com/s/UdryTdVTA0">
+                    <img src="https://aka.doubaocdn.com/s/UdryTdVTA0" alt="街道光影">
+                    <div class="photo-overlay"><span>街道光影</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 第8页：大学生活感悟 ===== -->
+    <div class="slide slide-life" data-index="7">
+        <div class="grid-bg"></div>
+        <div class="glow-orb orb2"></div>
+        <div class="particles"></div>
+        <div class="slide-header">✨ 大学生活感悟</div>
+        <div class="content-wrapper">
+            <div class="life-quote">
+                大学不是<span class="highlight">终点</span>，而是你用代码、镜头和脚步<br>书写自己的<span class="highlight">起点</span>
+            </div>
+            <div class="life-cards">
+                <div class="life-card">
+                    <span class="life-card-emoji">📚</span>
+                    <div class="life-card-title">学习篇</div>
+                    <div class="life-card-text">
+                        信息安全这门课，理论多、实操更多。<br>
+                        上课认真听，课后多敲代码，<br>
+                        CTF、漏洞挖掘……慢慢来，别急。
+                    </div>
+                </div>
+                <div class="life-card">
+                    <span class="life-card-emoji">🌱</span>
+                    <div class="life-card-title">成长篇</div>
+                    <div class="life-card-text">
+                        大一懵懵懂懂，大二才开始真正找到节奏。<br>
+                        别怕犯错，每一次踩坑<br>
+                        都是未来的经验值。
+                    </div>
+                </div>
+                <div class="life-card">
+                    <span class="life-card-emoji">💡</span>
+                    <div class="life-card-title">态度篇</div>
+                    <div class="life-card-text">
+                        卷不赢就别硬卷，找到自己的节奏最重要。<br>
+                        健康 > 成绩 > 面子，<br>
+                        这是我踩过坑才懂的道理。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 第9页：给学弟学妹的建议（2×2网格） ===== -->
+    <div class="slide slide-tips" data-index="8">
+        <div class="grid-bg"></div>
+        <div class="glow-orb orb3"></div>
+        <div class="particles"></div>
+        <div class="slide-header">📝 给学弟学妹的建议</div>
+        <div class="content-wrapper">
+            <div class="tips-intro">大一不迷茫，大二不慌张 —— 这 4 句话送给你 👇</div>
+            <div class="tips-grid">
+                <div class="tip-card c1">
+                    <div class="tip-card-icon">⌨️</div>
+                    <div class="tip-card-title">多动手敲代码</div>
+                    <div class="tip-card-desc">看十遍不如敲一遍，遇到 bug 别慌，<strong>搜索引擎是你最好的老师</strong>。</div>
+                    <div class="tip-card-tag">🔥 行动</div>
+                </div>
+                <div class="tip-card c2">
+                    <div class="tip-card-icon">🏘️</div>
+                    <div class="tip-card-title">加入社团，但别加太多</div>
+                    <div class="tip-card-desc">1~2 个就够，<strong>摄影社、志愿者协会</strong>都是不错的选择，认识不同的人。</div>
+                    <div class="tip-card-tag">🤝 社交</div>
+                </div>
+                <div class="tip-card c3">
+                    <div class="tip-card-icon">🏃</div>
+                    <div class="tip-card-title">身体是革命的本钱</div>
+                    <div class="tip-card-desc">多运动！跑步、打球都行，<strong>别整天坐着</strong>，腰和颈椎会抗议的。</div>
+                    <div class="tip-card-tag">💪 生活</div>
+                </div>
+                <div class="tip-card c4">
+                    <div class="tip-card-icon">💬</div>
+                    <div class="tip-card-title">有问题随时找我</div>
+                    <div class="tip-card-desc">学习、生活、情感……只要我能帮的，别客气，<strong>这就是我当班助的意义</strong> 🫡</div>
+                    <div class="tip-card-tag">❤️ 班助寄语</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 第10页：期待 & 愿望 ===== -->
+    <div class="slide slide-goals" data-index="9">
+        <div class="grid-bg"></div>
+        <div class="glow-orb orb1"></div>
+        <div class="glow-orb orb2"></div>
+        <div class="particles"></div>
+        <div class="slide-header">🤝 期待 & 愿望</div>
+        <div class="content-wrapper">
+            <div class="goals-container">
+                <div class="goal-section">
+                    <div class="goal-section-title">
+                        <span class="dot expect"></span>
+                        我期待你们
+                    </div>
+                    <div class="goal-items">
+                        <div class="goal-item">
+                            <div class="goal-emoji">📖</div>
+                            <div class="goal-text">课堂上积极互动，别当"隐形人"</div>
+                        </div>
+                        <div class="goal-item">
+                            <div class="goal-emoji">🔥</div>
+                            <div class="goal-text">找到自己热爱的方向，并坚持下去</div>
+                        </div>
+                        <div class="goal-item">
+                            <div class="goal-emoji">🫂</div>
+                            <div class="goal-text">班级团结友爱，互相卷但别内耗</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goal-section">
+                    <div class="goal-section-title">
+                        <span class="dot hope"></span>
+                        我的小愿望
+                    </div>
+                    <div class="goal-items">
+                        <div class="goal-item">
+                            <div class="goal-emoji">🏆</div>
+                            <div class="goal-text">带你们拿一次班级荣誉</div>
+                        </div>
+                        <div class="goal-item">
+                            <div class="goal-emoji">📸</div>
+                            <div class="goal-text">组织一次班级户外活动，拍一堆合照</div>
+                        </div>
+                        <div class="goal-item">
+                            <div class="goal-emoji">😄</div>
+                            <div class="goal-text">毕业时大家回忆起来觉得"有个靠谱的班助"</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 第11页：班委介绍（图标汇集页） ===== -->
+    <div class="slide slide-committee" data-index="10">
+        <div class="grid-bg"></div>
+        <div class="glow-orb orb2"></div>
+        <div class="particles"></div>
+        <div class="slide-header">🏛️ 班委介绍</div>
+        <div class="content-wrapper">
+            <div class="committee-hint">点击图标查看各职位详情</div>
+            <div class="committee-grid">
+                <div class="committee-btn" data-idx="0">
+                    <div class="btn-icon bc1">👑</div>
+                    <div class="btn-name">班长</div>
+                    <div class="btn-sub">班级总负责人</div>
+                </div>
+                <div class="committee-btn" data-idx="1">
+                    <div class="btn-icon bc2">🧑‍⚖️</div>
+                    <div class="btn-name">副班长</div>
+                    <div class="btn-sub">班长的左膀右臂</div>
+                </div>
+                <div class="committee-btn" data-idx="2">
+                    <div class="btn-icon bc3">🕊️</div>
+                    <div class="btn-name">团支书</div>
+                    <div class="btn-sub">团内第一负责人</div>
+                </div>
+                <div class="committee-btn" data-idx="3">
+                    <div class="btn-icon bc4">📖</div>
+                    <div class="btn-name">学习委员</div>
+                    <div class="btn-sub">师生沟通桥梁</div>
+                </div>
+                <div class="committee-btn" data-idx="4">
+                    <div class="btn-icon bc5">🏠</div>
+                    <div class="btn-name">生活委员</div>
+                    <div class="btn-sub">班费管家</div>
+                </div>
+                <div class="committee-btn" data-idx="5">
+                    <div class="btn-icon bc6">🤝</div>
+                    <div class="btn-name">资助委员</div>
+                    <div class="btn-sub">奖助贷补经办人</div>
+                </div>
+                <div class="committee-btn" data-idx="6">
+                    <div class="btn-icon bc7">🎤</div>
+                    <div class="btn-name">文艺委员</div>
+                    <div class="btn-sub">文艺氛围担当</div>
+                </div>
+                <div class="committee-btn" data-idx="7">
+                    <div class="btn-icon bc8">⚽</div>
+                    <div class="btn-name">体育委员</div>
+                    <div class="btn-sub">运动动员官</div>
+                </div>
+                <div class="committee-btn" data-idx="8">
+                    <div class="btn-icon bc9">💚</div>
+                    <div class="btn-name">心理委员</div>
+                    <div class="btn-sub">心灵守护者</div>
+                </div>
+                <div class="committee-btn" data-idx="9">
+                    <div class="btn-icon bc10">📏</div>
+                    <div class="btn-name">纪律委员</div>
+                    <div class="btn-sub">考勤纪律守门人</div>
+                </div>
+                <div class="committee-btn" data-idx="10">
+                    <div class="btn-icon bc11">🛡️</div>
+                    <div class="btn-name">监察委员</div>
+                    <div class="btn-sub">流程监督·意见收集</div>
+                </div>
+            </div>
+            <div class="committee-footer-hint">👆 点击图标查看详细介绍</div>
+        </div>
+    </div>
+
+    <!-- ===== 第12页：联系方式 ===== -->
+    <div class="slide slide-contact" data-index="11">
+        <div class="grid-bg"></div>
+        <div class="particles"></div>
+        <div class="slide-header">📱 联系我</div>
+        <div class="content-wrapper">
+            <div class="contact-container">
+                <div class="contact-card qq">
+                    <div class="contact-icon-big qq-bg">🐧</div>
+                    <div class="contact-label">QQ</div>
+                    <div class="contact-name">諾日</div>
+                    <div class="contact-id">3502645470</div>
+                    <div class="contact-badge qq-badge">随时欢迎添加</div>
+                    <div class="qr-wrapper">
+                        <img src="qq_qr.png" alt="QQ二维码">
+                    </div>
+                </div>
+
+                <div class="contact-card phone">
+                    <div class="contact-icon-big phone-bg">📞</div>
+                    <div class="contact-label">电话</div>
+                    <div class="contact-name">諾日</div>
+                    <div class="contact-id">17743240153</div>
+                    <div class="contact-badge phone-badge">紧急联系首选</div>
+                    <div class="qr-wrapper">
+                        <img src="group_qr.png" alt="微信群二维码">
+                    </div>
+                </div>
+
+                <div class="contact-card wechat">
+                    <div class="contact-icon-big wechat-bg">💬</div>
+                    <div class="contact-label">微信（常驻）</div>
+                    <div class="contact-name">怎叹</div>
+                    <div class="contact-id">Hell0030711</div>
+                    <div class="contact-badge wechat-badge">常驻平台 · 回复更快</div>
+                    <div class="qr-wrapper">
+                        <img src="wechat_qr.png" alt="微信二维码">
+                    </div>
+                </div>
+            </div>
+            <p class="contact-note" style="text-align:center; margin-top:24px; color:rgba(255,255,255,0.35); font-size:14px;">
+                💡 微信更常在线，建议优先添加微信哦~
+            </p>
+        </div>
+    </div>
+
+    <!-- ===== 第13页：结束页 ===== -->
+    <div class="slide slide-end" data-index="12">
+        <div class="grid-bg"></div>
+        <div class="glow-orb orb1"></div>
+        <div class="glow-orb orb2"></div>
+        <div class="particles"></div>
+        <div class="end-emoji">👋</div>
+        <div class="end-text">很高兴认识大家！</div>
+        <div class="end-sub">有问题随时联系我，我会尽力帮忙</div>
+        <div class="end-sparkle">✨ 愿你们的大学时光闪闪发光 ✨</div>
+    </div>
+
+</div>
+
+<!-- 导航圆点 -->
+<div class="nav-dots" id="navDots"></div>
+
+<!-- 左右箭头 -->
+<div class="nav-arrow left" id="prevBtn">◀</div>
+<div class="nav-arrow right" id="nextBtn">▶</div>
+
+<!-- 键盘提示 -->
+<div class="keyboard-hint">← → 切换页面 · 空格翻页</div>
+
+<!-- 背景音乐 -->
+<audio id="bgMusic" src="音乐.mp3" loop autoplay preload="auto" muted></audio>
+
+<!-- 音乐控制按钮 -->
+<div class="music-ripple" id="musicRipple"></div>
+<div class="music-btn" id="musicBtn" title="点击切换静音/播放">
+    <span class="music-icon" id="musicIcon">🔊</span>
+</div>
+
+<!-- 模态框 -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card" id="modalCard">
+        <div class="modal-top-bar" id="modalTopBar"></div>
+        <div class="modal-icon" id="modalIcon"></div>
+        <div class="modal-name" id="modalName"></div>
+        <div class="modal-tag" id="modalTag"></div>
+        <div class="modal-section">
+            <div class="modal-section-title">📌 职责</div>
+            <div class="modal-duty" id="modalDuty"></div>
+        </div>
+        <div class="modal-section">
+            <div class="modal-section-title">✅ 要求</div>
+            <div class="modal-req" id="modalReq"></div>
+        </div>
+        <div class="modal-tip" id="modalTip">
+            <span class="tip-bulb">💡</span>
+            <span id="modalTipText"></span>
+        </div>
+    </div>
+</div>
+
+<!-- 浮动关闭按钮 -->
+<div class="modal-close-float" id="modalCloseFloat" title="关闭">✕</div>
+
+<!-- 图片灯箱 -->
+<div class="lightbox-overlay" id="lightboxOverlay">
+    <button class="lightbox-close" id="lightboxClose">✕</button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="放大查看">
+    <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+
+<script>
+    // ===== 班委数据 =====
+    const committeeData = [
+        {
+            icon: '👑', name: '班长', tag: '班级总负责人', colorIdx: 1,
+            duty: '班级总负责人，对接辅导员；统筹班级大小事务，通知传达各类消息；组织班会，协调各班委工作；收集班级问题反馈给老师；统计各类信息、组织集体活动。',
+            req: '责任心强，时间充裕，善于沟通协调，做事靠谱，有一定组织能力。',
+            tip: ''
+        },
+        {
+            icon: '🧑‍⚖️', name: '副班长', tag: '班长的左膀右臂', colorIdx: 2,
+            duty: '协助班长处理班级事务；班长不在时代理工作；常负责考勤、纪律统计，协助活动组织。',
+            req: '踏实细心，执行力强，配合意识好。',
+            tip: ''
+        },
+        {
+            icon: '🕊️', name: '团支书', tag: '团内第一负责人', colorIdx: 3,
+            duty: '管理团员信息，收团费；组织团日活动、青年大学习；推优入党、团材料整理上报；开展思想相关主题活动。',
+            req: '熟悉团务工作，做事严谨，愿意写材料，时间较多。',
+            tip: ''
+        },
+        {
+            icon: '📖', name: '学习委员', tag: '师生沟通桥梁', colorIdx: 4,
+            duty: '对接任课老师，收发作业；传达课程通知、考试安排；收集同学学习问题反馈老师；组织学习互助、复习资料分享；统计挂科、成绩相关信息。',
+            req: '学习态度端正，细心负责，善于对接师生。',
+            tip: ''
+        },
+        {
+            icon: '🏠', name: '生活委员', tag: '班费管家', colorIdx: 5,
+            duty: '管理班费收支、记账公示；关心同学生活问题；部分负责宿舍相关反馈。',
+            req: '账目清晰，公正细心，不贪小利。',
+            tip: ''
+        },
+        {
+            icon: '🤝', name: '资助委员', tag: '奖助贷补经办人', colorIdx: 6,
+            duty: '专门负责奖助学金、贫困认定、各类补助政策通知；收集整理申报材料；解答同学资助相关疑问，协助老师完成资助信息统计上报。',
+            req: '严谨细心，保密意识强，做事公平公正。',
+            tip: ''
+        },
+        {
+            icon: '🎤', name: '文艺委员', tag: '文艺氛围担当', colorIdx: 7,
+            duty: '组织晚会、节目排练，文艺类活动报名，调动班级文艺氛围，策划班级文艺相关活动。',
+            req: '性格外向，有一定才艺，擅长调动氛围。',
+            tip: ''
+        },
+        {
+            icon: '⚽', name: '体育委员', tag: '运动动员官', colorIdx: 8,
+            duty: '运动会、球赛报名组织，体育课相关通知，动员同学参加体育赛事，组织班级体育活动。',
+            req: '热爱运动，执行力强，善于动员同学。',
+            tip: ''
+        },
+        {
+            icon: '💚', name: '心理委员', tag: '心灵守护者', colorIdx: 9,
+            duty: '关注同学心理状态，发现情绪异常及时上报辅导员；组织心理主题班会；转发心理科普，对接学校心理中心。',
+            req: '善于倾听，共情能力强，保密意识强。',
+            tip: ''
+        },
+        {
+            icon: '📏', name: '纪律委员', tag: '考勤纪律守门人', colorIdx: 10,
+            duty: '课堂、班会考勤记录；维持班级活动纪律，反馈违纪情况。',
+            req: '公正客观，不怕得罪人。',
+            tip: ''
+        },
+        {
+            icon: '🛡️', name: '监察委员', tag: '流程监督·意见收集', colorIdx: 11,
+            duty: '收集全体同学对班委工作的意见建议，整理汇总；牵头组织班委民主评议；按班级规章参与组织班委补选、罢免的流程发起与意见统计；监督班费公开、班委履职情况；不直接干涉班委日常执行工作，只做监督反馈，重大情况向辅导员汇报。',
+            req: '处事中立公正，有原则，保密意识强，不偏袒，善于收集整理民意。',
+            tip: '监察委员只负责流程监督、意见收集，没有直接任免权力，罢免、选举最终需要全班同学表决 + 辅导员确认。'
+        }
+    ];
+
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    let currentSlide = 0;
+    let isAnimating = false;
+
+    // 创建导航圆点
+    const navDots = document.getElementById('navDots');
+    for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goToSlide(i));
+        navDots.appendChild(dot);
+    }
+
+    // 进度条
+    const progressBar = document.getElementById('progressBar');
+    const pageFlash = document.getElementById('pageFlash');
+
+    function updateProgress(index) {
+        const pct = ((index + 1) / totalSlides) * 100;
+        progressBar.style.width = pct + '%';
+    }
+
+    function goToSlide(index) {
+        if (index < 0 || index >= totalSlides || index === currentSlide || isAnimating) return;
+        isAnimating = true;
+
+        // 关闭可能打开的模态框和灯箱
+        closeModal();
+        closeLightbox();
+
+        pageFlash.classList.add('active');
+        setTimeout(() => pageFlash.classList.remove('active'), 150);
+
+        slides[currentSlide].classList.remove('active');
+
+        setTimeout(() => {
+            slides[index].classList.add('active');
+        }, 50);
+
+        document.querySelectorAll('.nav-dot').forEach((d, i) => {
+            d.classList.toggle('active', i === index);
+        });
+
+        updateProgress(index);
+        currentSlide = index;
+
+        setTimeout(() => { isAnimating = false; }, 700);
+    }
+
+    function nextSlide() {
+        goToSlide(Math.min(currentSlide + 1, totalSlides - 1));
+    }
+
+    function prevSlide() {
+        goToSlide(Math.max(currentSlide - 1, 0));
+    }
+
+    document.getElementById('nextBtn').addEventListener('click', nextSlide);
+    document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            e.preventDefault();
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            prevSlide();
+        } else if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // 触摸滑动
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) nextSlide();
+            else prevSlide();
+        }
+    }
+
+    // 鼠标滚轮
+    let wheelTimeout = null;
+    document.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        if (wheelTimeout) return;
+        if (e.deltaY > 30) nextSlide();
+        else if (e.deltaY < -30) prevSlide();
+        wheelTimeout = setTimeout(() => { wheelTimeout = null; }, 800);
+    }, { passive: false });
+
+    // 创建背景粒子
+    function createParticles() {
+        const colors = ['#667eea', '#764ba2', '#43e97b', '#38f9d7', '#f093fb', '#f5576c', '#fa709a', '#fee140'];
+        document.querySelectorAll('.particles').forEach(container => {
+            const count = window.innerWidth < 768 ? 8 : 18;
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 6 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDuration = (Math.random() * 10 + 8) + 's';
+                particle.style.animationDelay = (Math.random() * 12) + 's';
+                container.appendChild(particle);
+            }
+        });
+    }
+
+    createParticles();
+    updateProgress(0);
+
+    // ===== 音乐控制 =====
+    const bgMusic = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicBtn');
+    const musicIcon = document.getElementById('musicIcon');
+
+    let audioUnlocked = false;
+
+    bgMusic.volume = 0.5;
+    bgMusic.muted = true;
+    musicBtn.classList.add('muted');
+    musicIcon.textContent = '🔇';
+
+    bgMusic.play().catch(() => {});
+
+    function firstClickUnlock() {
+        if (audioUnlocked) return;
+        audioUnlocked = true;
+
+        bgMusic.muted = false;
+        musicBtn.classList.remove('muted');
+        musicIcon.textContent = '🔊';
+
+        bgMusic.play().catch(() => {});
+
+        document.removeEventListener('click', firstClickUnlock);
+        document.removeEventListener('touchend', firstClickUnlock);
+    }
+
+    document.addEventListener('click', firstClickUnlock);
+    document.addEventListener('touchend', firstClickUnlock, { passive: true });
+
+    musicBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        if (bgMusic.muted) {
+            bgMusic.muted = false;
+            musicBtn.classList.remove('muted');
+            musicIcon.textContent = '🔊';
+            bgMusic.play().catch(() => {});
+        } else {
+            bgMusic.muted = true;
+            musicBtn.classList.add('muted');
+            musicIcon.textContent = '🔇';
+        }
+    });
+
+    // ===== 班委模态框 =====
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalCloseFloat = document.getElementById('modalCloseFloat');
+
+    function openModal(idx) {
+        const d = committeeData[idx];
+        const ci = d.colorIdx;
+
+        document.getElementById('modalTopBar').className = 'modal-top-bar mc' + ci;
+        document.getElementById('modalIcon').className = 'modal-icon mi' + ci;
+        document.getElementById('modalIcon').textContent = d.icon;
+        document.getElementById('modalName').textContent = d.name;
+        document.getElementById('modalTag').className = 'modal-tag mt' + ci;
+        document.getElementById('modalTag').textContent = d.tag;
+        document.getElementById('modalDuty').textContent = d.duty;
+        document.getElementById('modalReq').textContent = d.req;
+
+        const tipEl = document.getElementById('modalTip');
+        if (d.tip) {
+            tipEl.style.display = 'block';
+            document.getElementById('modalTipText').textContent = d.tip;
+        } else {
+            tipEl.style.display = 'none';
+        }
+
+        modalOverlay.classList.add('active');
+        modalCloseFloat.classList.add('visible');
+    }
+
+    function closeModal() {
+        modalOverlay.classList.remove('active');
+        modalCloseFloat.classList.remove('visible');
+    }
+
+    // 绑定图标点击
+    document.querySelectorAll('.committee-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            openModal(parseInt(btn.dataset.idx));
+        });
+    });
+
+    // 关闭模态框
+    modalCloseFloat.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) closeModal();
+    });
+
+    // ===== 图片灯箱 =====
+    const lightboxOverlay = document.getElementById('lightboxOverlay');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+    const lightboxCounter = document.getElementById('lightboxCounter');
+    const photoCards = document.querySelectorAll('.photo-card');
+    let currentPhotoIndex = 0;
+
+    function openLightbox(index) {
+        currentPhotoIndex = index;
+        const card = photoCards[index];
+        lightboxImg.src = card.dataset.src;
+        lightboxImg.alt = card.querySelector('img').alt;
+        lightboxCounter.textContent = (index + 1) + ' / ' + photoCards.length;
+        lightboxOverlay.classList.add('active');
+    }
+    function closeLightbox() {
+        if (lightboxOverlay) lightboxOverlay.classList.remove('active');
+    }
+    photoCards.forEach((card, index) => {
+        card.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLightbox(index);
+        });
+    });
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightboxOverlay.addEventListener('click', (e) => {
+        if (e.target === lightboxOverlay) closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightboxOverlay && lightboxOverlay.classList.contains('active')) {
+            closeLightbox();
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打地鼠游戏</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* 游戏背景和基本样式 */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            overflow-x: hidden;
+            /* 自定义锤子鼠标指针 */
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='75' height='75' viewBox='0 0 75 75'%3E%3Cg transform='rotate(135 37.5 37.5)'%3E%3Cdefs%3E%3ClinearGradient id='handleGradient' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ff6b6b'/%3E%3Cstop offset='50%25' stop-color='%23ff8787'/%3E%3Cstop offset='100%25' stop-color='%23ff6b6b'/%3E%3C/linearGradient%3E%3ClinearGradient id='hammerGradient' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234ecdc4'/%3E%3Cstop offset='50%25' stop-color='%2366d9ce'/%3E%3Cstop offset='100%25' stop-color='%234ecdc4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='34' y='5' width='6' height='45' fill='url(%23handleGradient)' stroke='%23ff5252' stroke-width='2'/%3E%3Crect x='22' y='45' width='32' height='18' rx='6' ry='6' fill='url(%23hammerGradient)' stroke='%2338b2ac' stroke-width='2'/%3E%3C/g%3E%3C/svg%3E"), auto;
+            transition: cursor 0.1s ease;
+        }
+        
+        /* 锤子打击状态 */
+        body.hammer-hit {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='75' height='75' viewBox='0 0 75 75'%3E%3Cg transform='rotate(90 37.5 37.5)'%3E%3Cdefs%3E%3ClinearGradient id='handleGradient3' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ff6b6b'/%3E%3Cstop offset='50%25' stop-color='%23ff8787'/%3E%3Cstop offset='100%25' stop-color='%23ff6b6b'/%3E%3C/linearGradient%3E%3ClinearGradient id='hammerGradient3' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234ecdc4'/%3E%3Cstop offset='50%25' stop-color='%2366d9ce'/%3E%3Cstop offset='100%25' stop-color='%234ecdc4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='34' y='5' width='6' height='45' fill='url(%23handleGradient3)' stroke='%23ff5252' stroke-width='2'/%3E%3Crect x='22' y='45' width='32' height='18' rx='6' ry='6' fill='url(%23hammerGradient3)' stroke='%2338b2ac' stroke-width='2'/%3E%3C/g%3E%3C/svg%3E"), auto;
+        }
+        
+        /* 游戏容器 */
+        #gameContainer {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 90%;
+        }
+        
+        /* 游戏标题 */
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 分数板 */
+        #scoreBoard {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+        
+        /* 分数和时间显示 */
+        #score, #time {
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 游戏板 */
+        #gameBoard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 15px;
+            margin: 25px 0;
+            max-width: 100%;
+        }
+        
+        /* 地鼠洞 */
+        .hole {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%;
+            background: radial-gradient(circle, #333, #000);
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: inset 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* 地鼠 */
+        .mole {
+            position: absolute;
+            bottom: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 80%;
+            background: linear-gradient(135deg, #8b4513, #a0522d);
+            border-radius: 50% 50% 0 0;
+            transition: bottom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='75' height='75' viewBox='0 0 75 75'%3E%3Cg transform='rotate(135 37.5 37.5)'%3E%3Cdefs%3E%3ClinearGradient id='handleGradient2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ff8787'/%3E%3Cstop offset='50%25' stop-color='%23ffaaaa'/%3E%3Cstop offset='100%25' stop-color='%23ff8787'/%3E%3C/linearGradient%3E%3ClinearGradient id='hammerGradient2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ff6b6b'/%3E%3Cstop offset='50%25' stop-color='%23ff8787'/%3E%3Cstop offset='100%25' stop-color='%23ff6b6b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='34' y='5' width='6' height='45' fill='url(%23handleGradient2)' stroke='%23ff5252' stroke-width='2'/%3E%3Crect x='22' y='45' width='32' height='18' rx='6' ry='6' fill='url(%23hammerGradient2)' stroke='%23ff5252' stroke-width='2'/%3E%3C/g%3E%3C/svg%3E"), pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+        
+        /* 防止伪元素干扰点击 */
+        .mole::before,
+        .mole::after {
+            pointer-events: none;
+        }
+        
+        /* 地鼠眼睛 */
+        .mole::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 25%;
+            width: 15%;
+            height: 15%;
+            background: #000;
+            border-radius: 50%;
+            box-shadow: 30px 0 0 #000;
+        }
+        
+        /* 地鼠嘴巴 */
+        .mole::after {
+            content: '';
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30%;
+            height: 10%;
+            background: #ff6b6b;
+            border-radius: 20px;
+        }
+        
+        /* 地鼠激活状态 */
+        .mole.active {
+            bottom: 0;
+        }
+        
+        /* 地鼠被击中状态 */
+        .mole.hit {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            animation: hit 0.3s ease;
+        }
+        
+        /* 击中动画 */
+        @keyframes hit {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(0.8); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+        
+        /* 分数弹出效果 */
+        .score-popup {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            animation: scorePopup 1s ease-out forwards;
+        }
+        
+        /* 分数弹出动画 */
+        @keyframes scorePopup {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px) scale(1.5);
+            }
+        }
+        
+        /* 爆炸粒子 */
+        .explosion-particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: firework 0.8s ease-out forwards;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 1);
+        }
+        
+        /* 烟花爆炸动画 */
+        @keyframes firework {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            70% {
+                opacity: 1;
+                transform: scale(1.5) translateY(var(--y)) translateX(var(--x));
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5) translateY(var(--y)) translateX(var(--x));
+            }
+        }
+        
+        /* 地鼠出现特效 */
+        .mole-appear-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+            animation: moleAppear 0.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* 地鼠出现动画 */
+        @keyframes moleAppear {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        /* 开始游戏按钮 */
+        #startButton {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            color: white;
+            border: none;
+            padding: 30px 80px;
+            font-size: 2em;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.6);
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 999;
+        }
+        
+        /* 按钮悬停效果 */
+        #startButton:hover {
+            transform: translate(-50%, -52%);
+            box-shadow: 0 12px 35px rgba(255, 107, 107, 0.8);
+        }
+        
+        /* 按钮点击效果 */
+        #startButton:active {
+            transform: translate(-50%, -48%);
+        }
+        
+        /* 音量控制容器 */
+        #volumeControlContainer {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        /* 音量控制标签 */
+        #volumeControlContainer label {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        /* 音量滑块 */
+        #volumeControl {
+            width: 150px;
+            height: 8px;
+            border-radius: 4px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        /* 音量滑块样式 */
+        #volumeControl::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 音量滑块样式（Firefox） */
+        #volumeControl::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 响应式设计 - 平板设备 */
+        @media (max-width: 768px) {
+            #gameContainer {
+                padding: 20px;
+                margin: 10px;
+            }
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 15px;
+            }
+            #scoreBoard {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+            #score, #time {
+                padding: 8px 16px;
+            }
+            #gameBoard {
+                grid-gap: 8px;
+                margin: 20px 0;
+            }
+            #startButton {
+                padding: 12px 30px;
+                font-size: 1em;
+                margin-top: 15px;
+            }
+        }
+        
+        /* 响应式设计 - 手机设备 */
+        @media (max-width: 480px) {
+            #gameContainer {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            #scoreBoard {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+            #score, #time {
+                width: 150px;
+            }
+            #gameBoard {
+                grid-gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <h1>打地鼠游戏</h1>
+        <div id="scoreBoard">
+            <div id="score">分数: 0</div>
+            <div id="time">时间: 60s</div>
+        </div>
+        <div id="gameBoard">
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+        </div>
+        <button id="startButton">开始游戏</button>
+        <div id="volumeControlContainer">
+            <label for="volumeControl">音量：</label>
+            <input type="range" id="volumeControl" min="0" max="100" value="50" oninput="updateBackgroundMusicVolume()">
+        </div>
+    </div>
+    
+    <!-- 倒计时画面 -->
+    <div id="countdownScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 1001; flex-direction: column; justify-content: center; align-items: center; color: white;">
+        <div id="countdown" style="font-size: 10em; font-weight: bold; margin-bottom: 30px;">3</div>
+        <div id="countdownText" style="font-size: 2em;">准备开始</div>
+    </div>
+    
+    <!-- 结算画面 -->
+    <div id="gameOverScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; color: white;">
+        <h2>游戏结束！</h2>
+        <p id="finalScore" style="font-size: 2em; margin: 20px 0;">恭喜获得 0 分</p>
+        <div id="gameStats" style="font-size: 1.2em; margin: 20px 0; text-align: center;">
+            <p>打到 <span id="molesHit">0</span> 只地鼠</p>
+            <p>失误 <span id="misses">0</span> 次</p>
+            <p>等级: <span id="rank" style="font-size: 1.5em; font-weight: bold; color: #ffd700;">C</span></p>
+        </div>
+        <button id="restartButton" style="padding: 15px 30px; font-size: 1.2em; background: #4ecdc4; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background 0.3s ease;">重新开始</button>
+    </div>
+
+    <script>
+        // 游戏元素
+        const gameBoard = document.getElementById('gameBoard');
+        const moles = document.querySelectorAll('.mole');
+        const scoreElement = document.getElementById('score');
+        const timeElement = document.getElementById('time');
+        const startButton = document.getElementById('startButton');
+
+        // 游戏变量
+        let score = 0;
+        let timeLeft = 60;
+        let gameInterval;
+        let moleInterval;
+        let isGameActive = false;
+        let currentMole = null;
+        let audioContext = null;
+        let backgroundMusic = null;
+        let molesHit = 0; // 打到的地鼠数量
+        let misses = 0; // 失误次数
+
+        // 随机出现地鼠
+        function randomMole() {
+            // 隐藏当前地鼠
+            if (currentMole) {
+                currentMole.classList.remove('active');
+                currentMole = null;
+            }
+
+            // 随机选择一个地鼠（避免连续出现同一个）
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * moles.length);
+            } while (currentMole === moles[randomIndex]);
+            
+            currentMole = moles[randomIndex];
+            
+            // 在地鼠出现时添加特效
+            const hole = currentMole.parentElement;
+            const effect = document.createElement('div');
+            effect.classList.add('mole-appear-effect');
+            hole.appendChild(effect);
+            
+            // 移除特效
+            setTimeout(() => {
+                effect.remove();
+            }, 500);
+            
+            currentMole.classList.add('active');
+
+            // 设置地鼠消失时间
+            setTimeout(() => {
+                if (currentMole && currentMole.classList.contains('active')) {
+                    // 地鼠没被打中，播放失误音效
+                    playMissSound();
+                    misses += 1; // 增加失误次数
+                    currentMole.classList.remove('active');
+                    currentMole = null;
+                }
+            }, 2000);
+        }
+
+        // 点击地鼠
+        function whackMole(e) {
+            if (!isGameActive) return;
+            
+            const mole = e.target;
+            if (mole.classList.contains('active')) {
+                // 锤子打击特效
+                document.body.classList.add('hammer-hit');
+                setTimeout(() => {
+                    document.body.classList.remove('hammer-hit');
+                }, 250);
+                
+                // 增加分数
+                score += 10;
+                molesHit += 1; // 增加打到的地鼠数量
+                scoreElement.textContent = `分数: ${score}`;
+
+                // 显示击中效果
+                mole.classList.remove('active');
+                mole.classList.add('hit');
+                setTimeout(() => {
+                    mole.classList.remove('hit');
+                }, 300);
+
+                // 重置当前地鼠
+                if (currentMole === mole) {
+                    currentMole = null;
+                }
+
+                // 分数提示
+                createScorePopup(e.clientX, e.clientY);
+
+                // 爆炸粒子效果 - 在鼠标点击位置炸开
+                createExplosion(e.clientX, e.clientY);
+
+                // 播放音效
+                playHitSound();
+            }
+        }
+
+        // 创建分数提示
+        function createScorePopup(x, y) {
+            const scoreElement = document.createElement('div');
+            scoreElement.classList.add('score-popup');
+            scoreElement.textContent = '+10';
+            scoreElement.style.left = x + 'px';
+            scoreElement.style.top = y + 'px';
+            document.body.appendChild(scoreElement);
+
+            // 移除分数提示
+            setTimeout(() => {
+                scoreElement.remove();
+            }, 1000);
+        }
+
+        // 创建烟花粒子效果
+        function createExplosion(x, y) {
+            // 主爆炸圈
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('explosion-particle');
+                
+                // 随机颜色
+                const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#ffd700', '#9b59b6', '#ff8e53', '#667eea', '#f093fb'];
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // 烟花爆炸轨迹
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 200;
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--x', dx + 'px');
+                particle.style.setProperty('--y', dy + 'px');
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.animationDelay = Math.random() * 0.3 + 's';
+                
+                // 随机大小
+                const size = Math.random() * 10 + 5;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                document.body.appendChild(particle);
+
+                // 移除粒子
+                setTimeout(() => {
+                    particle.remove();
+                }, 800);
+            }
+            
+            // 中心火花
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('explosion-particle');
+                particle.style.backgroundColor = '#ffd700';
+                particle.style.boxShadow = '0 0 20px rgba(255, 215, 0, 1)';
+                
+                // 中心扩散
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 50;
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--x', dx + 'px');
+                particle.style.setProperty('--y', dy + 'px');
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.animationDelay = Math.random() * 0.1 + 's';
+                particle.style.width = '8px';
+                particle.style.height = '8px';
+                
+                document.body.appendChild(particle);
+
+                // 移除粒子
+                setTimeout(() => {
+                    particle.remove();
+                }, 800);
+            }
+        }
+
+        // 初始化音频上下文
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // 播放背景音乐 - 欢乐斗地主风格
+        function playBackgroundMusic() {
+            try {
+                // 检查是否已经在播放音乐
+                if (backgroundMusic) {
+                    return; // 已经在播放，直接返回
+                }
+                
+                initAudioContext();
+                
+                // 创建主振荡器（旋律）
+                const melodyOscillator = audioContext.createOscillator();
+                const melodyGain = audioContext.createGain();
+                
+                // 创建低音振荡器
+                const bassOscillator = audioContext.createOscillator();
+                const bassGain = audioContext.createGain();
+                
+                // 连接到目标
+                melodyOscillator.connect(melodyGain);
+                bassOscillator.connect(bassGain);
+                melodyGain.connect(audioContext.destination);
+                bassGain.connect(audioContext.destination);
+                
+                // 设置音量
+                const volume = parseFloat(document.getElementById('volumeControl').value) / 100;
+                melodyGain.gain.setValueAtTime(0.15 * volume, audioContext.currentTime);
+                bassGain.gain.setValueAtTime(0.12 * volume, audioContext.currentTime);
+                
+                // 欢乐斗地主风格旋律 - 中国风C大调
+                const melodyNotes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25];
+                const bassNotes = [130.81, 146.83, 164.81, 174.61, 196.00];
+                
+                // 播放旋律
+                let time = audioContext.currentTime;
+                const noteDuration = 0.2; // 稍微慢一点的节奏
+                
+                // 欢乐斗地主风格的旋律模式
+                const melodyPattern = [0, 2, 4, 2, 0, 2, 4, 5, 7, 5, 4, 2, 0, 2, 4, 2, 0, 2, 4, 5, 7, 5, 4, 2, 0];
+                const bassPattern = [0, 0, 1, 1, 2, 2, 3, 3, 0, 0, 1, 1, 2, 2, 3, 3];
+                
+                // 播放旋律循环
+                function playMelodyPattern() {
+                    melodyPattern.forEach((noteIndex, i) => {
+                        const noteTime = time + i * noteDuration;
+                        melodyOscillator.frequency.setValueAtTime(melodyNotes[noteIndex], noteTime);
+                    });
+                    
+                    bassPattern.forEach((noteIndex, i) => {
+                        const noteTime = time + i * noteDuration * 2;
+                        bassOscillator.frequency.setValueAtTime(bassNotes[noteIndex], noteTime);
+                    });
+                    
+                    time += melodyPattern.length * noteDuration;
+                    
+                    // 继续循环
+                    if (backgroundMusic) { // 只有在音乐对象存在时才继续播放
+                        setTimeout(playMelodyPattern, melodyPattern.length * noteDuration * 1000);
+                    }
+                }
+                
+                // 开始播放
+                melodyOscillator.start(audioContext.currentTime);
+                bassOscillator.start(audioContext.currentTime);
+                
+                // 存储音乐对象
+                backgroundMusic = {
+                    melody: melodyOscillator,
+                    bass: bassOscillator,
+                    melodyGain: melodyGain,
+                    bassGain: bassGain
+                };
+                
+                // 开始播放模式
+                playMelodyPattern();
+                
+            } catch (e) {
+                console.log('背景音乐播放失败:', e);
+            }
+        }
+
+        // 更新背景音乐音量
+        function updateBackgroundMusicVolume() {
+            if (backgroundMusic) {
+                const volume = parseFloat(document.getElementById('volumeControl').value) / 100;
+                backgroundMusic.melodyGain.gain.setValueAtTime(0.15 * volume, audioContext.currentTime);
+                backgroundMusic.bassGain.gain.setValueAtTime(0.12 * volume, audioContext.currentTime);
+            }
+        }
+
+        // 停止背景音乐
+        function stopBackgroundMusic() {
+            if (backgroundMusic) {
+                try {
+                    backgroundMusic.melody.stop();
+                    backgroundMusic.bass.stop();
+                    backgroundMusic = null;
+                } catch (e) {
+                    console.log('停止音乐失败:', e);
+                }
+            }
+        }
+
+        // 播放击中音效
+        function playHitSound() {
+            try {
+                initAudioContext();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (e) {
+                console.log('音频播放失败:', e);
+            }
+        }
+
+        // 播放失误音效
+        function playMissSound() {
+            try {
+                initAudioContext();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 300;
+                oscillator.type = 'sawtooth';
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.2);
+            } catch (e) {
+                console.log('音频播放失败:', e);
+            }
+        }
+
+        // 开始游戏
+        function startGame() {
+            if (isGameActive) return;
+            
+            // 隐藏开始按钮
+            document.getElementById('startButton').style.display = 'none';
+            
+            // 初始化音频上下文（用户交互后）
+            initAudioContext();
+            
+            // 重置游戏
+            score = 0;
+            timeLeft = 60;
+            molesHit = 0; // 重置打到的地鼠数量
+            misses = 0; // 重置失误次数
+            scoreElement.textContent = `分数: ${score}`;
+            timeElement.textContent = `时间: ${timeLeft}秒`;
+            startButton.textContent = '游戏中...';
+            startButton.disabled = true;
+
+            // 显示倒计时画面
+            const countdownScreen = document.getElementById('countdownScreen');
+            const countdownElement = document.getElementById('countdown');
+            const countdownText = document.getElementById('countdownText');
+            countdownScreen.style.display = 'flex';
+            
+            let count = 3;
+            countdownElement.textContent = count;
+            
+            // 播放倒计时音效
+            function playCountdownSound() {
+                try {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                } catch (e) {
+                    console.log('音频播放失败:', e);
+                }
+            }
+            
+            // 倒计时函数
+            const countdownInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownElement.textContent = count;
+                    playCountdownSound();
+                } else {
+                    clearInterval(countdownInterval);
+                    countdownElement.textContent = '开始!';
+                    countdownText.textContent = '游戏开始';
+                    playCountdownSound();
+                    
+                    // 延迟后开始游戏
+                    setTimeout(() => {
+                        countdownScreen.style.display = 'none';
+                        isGameActive = true;
+                        
+                        // 开始地鼠出现
+                        moleInterval = setInterval(randomMole, 1200);
+
+                        // 开始倒计时
+                        gameInterval = setInterval(() => {
+                            timeLeft--;
+                            timeElement.textContent = `时间: ${timeLeft}s`;
+
+                            if (timeLeft <= 0) {
+                                endGame();
+                            }
+                        }, 1000);
+                    }, 500);
+                }
+            }, 1000);
+        }
+
+        // 结束游戏
+        function endGame() {
+            isGameActive = false;
+            clearInterval(moleInterval);
+            clearInterval(gameInterval);
+            startButton.textContent = '重新开始';
+            startButton.disabled = false;
+            startButton.style.display = 'block'; // 重新显示开始按钮
+            
+            // 计算等级
+            let rank = 'C';
+            if (score >= 1000) {
+                rank = 'S';
+            } else if (score >= 800) {
+                rank = 'A';
+            } else if (score >= 500) {
+                rank = 'B';
+            }
+            
+            // 显示结算画面
+            document.getElementById('finalScore').textContent = `恭喜获得 ${score} 分`;
+            document.getElementById('molesHit').textContent = molesHit;
+            document.getElementById('misses').textContent = misses;
+            document.getElementById('rank').textContent = rank;
+            document.getElementById('gameOverScreen').style.display = 'flex';
+
+
+
+            // 隐藏所有地鼠
+            moles.forEach(mole => {
+                mole.classList.remove('active');
+            });
+
+
+        }
+
+        // 事件监听
+        moles.forEach(mole => {
+            mole.addEventListener('click', whackMole);
+        });
+
+        startButton.addEventListener('click', startGame);
+        
+        // 重新开始按钮事件
+        document.getElementById('restartButton').addEventListener('click', function() {
+            // 隐藏结算画面
+            document.getElementById('gameOverScreen').style.display = 'none';
+            // 重新开始游戏
+            startGame();
+        });
+        
+        // 页面加载完成后自动播放背景音乐
+        window.addEventListener('DOMContentLoaded', function() {
+            // 模拟用户交互以激活音频上下文
+            setTimeout(function() {
+                try {
+                    playBackgroundMusic();
+                } catch (e) {
+                    console.log('背景音乐初始化失败:', e);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
